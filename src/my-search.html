@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-search">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <firebase-auth 
+      app-name="match"
+      id="auth" 
+      user="{{user}}" 
+      on-error="handleError">
+    </firebase-auth>
+
+    <firebase-query
+      app-name="match"
+      id="userQuery"
+      path="/users"
+      data="users">
+    </firebase-query>
+
+
+    <div class="card">
+
+      <template is="dom-repeat" items="{{users}}">
+          <div><span>users.userName</span><paper-button>chat</paper-button></div>
+      </template>
+
+    </div>
+  </template>
+
+  <script>
+    class MySearch extends Polymer.Element {
+      static get is() { return 'my-search'; }
+
+      static get properties() {
+        return {
+          user: Object,
+        };
+      }
+    }
+
+    window.customElements.define(MySearch.is, MySearch);
+  </script>
+</dom-module>

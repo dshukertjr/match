@@ -1,0 +1,62 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-user">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+    </style>
+
+    <firebase-auth 
+      app-name="match"
+      id="auth" 
+      user="{{user}}" 
+      on-error="handleError">
+    </firebase-auth>
+
+    <firebase-query
+      app-name="match"
+      id="userQuery"
+      path="/users/[[user.uid]]">
+    </firebase-query>
+
+    <div class="card">
+
+      <h1>ユーザー名</h1>
+      <paper-textarea id="userName" label="ユーザー名を設定しましょう！"></paper-textarea>
+
+      <div class="buttons">
+        <a href="/search"><paper-button on-tap="enterProfile" id="btnPost" raised>Post</paper-button></a>
+      </div>
+
+
+    </div>
+  </template>
+
+  <script>
+    class MyUser extends Polymer.Element {
+      static get is() { return 'my-user'; }
+
+      enterProfile() {
+
+        var profile = {
+          "userName": this.$.userName
+        }
+
+        this.$.userQuery.ref.set(profile);
+      }
+
+    }
+
+
+    window.customElements.define(MyUser.is, MyUser);
+  </script>
+</dom-module>
