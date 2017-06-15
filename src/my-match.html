@@ -11,7 +11,38 @@
       }
     </style>
 
+    <firebase-auth 
+      app-name="match"
+      id="auth" 
+      user="{{user}}" 
+      on-error="handleError">
+    </firebase-auth>
+
+    <firebase-document
+      app-name="match"
+      path="/users/[[user.uid]]"
+      data="{{userMeta}}">
+    </firebase-document>
+
+    <firebase-query
+      app-name="match"
+      id="userQuery"
+      path="/users"
+      data="{{users}}">
+    </firebase-query>
+
+    <firebase-query
+      app-name="match"
+      id="pairQuery"
+      path="/pairs"
+      data="{{pairs}}">
+    </firebase-query>
+
     <div class="card">
+
+      <template is="dom-repeat" items="[[pairs]]">
+          <div><span>[[item.user1.userName]]</span><span>[[item.user2.userName]]</span><paper-button on-tap="createChatRoom" buddy="[[item]]">誘う</paper-button></div>
+      </template>
 
     </div>
   </template>
@@ -19,6 +50,26 @@
   <script>
     class MyMatch extends Polymer.Element {
       static get is() { return 'my-match'; }
+
+
+      static get properties() {
+        return {
+          user: Object,
+          users: Object,
+          pairs: Object,
+        };
+      }
+
+
+      createChatRoom(){
+        var profile = {
+          "userName": this.$.userName.value
+        }
+
+        this.$.userQuery.ref.set(profile);
+      }
+
+
     }
 
     window.customElements.define(MyMatch.is, MyMatch);

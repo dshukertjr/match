@@ -30,11 +30,15 @@
 
     <div class="card">
 
+      <paper-button on-tap="_siginIn" hidden$="[[user]]" raised>Login</paper-button>
+      <paper-button on-tap="_siginOut" hidden$="[[!user]]" raised>Logout</paper-button>
+
+
       <h1>ユーザー名</h1>
       <paper-textarea id="userName" label="ユーザー名を設定しましょう！"></paper-textarea>
 
-      <div class="buttons">
-        <a href="/search"><paper-button on-tap="enterProfile" id="btnPost" raised>Post</paper-button></a>
+      <div class="buttons" hidden$="[[!user]]">
+        <a href="/search"><paper-button on-tap="enterProfile" id="btnPost" raised>登録</paper-button></a>
       </div>
 
 
@@ -48,11 +52,21 @@
       enterProfile() {
 
         var profile = {
-          "userName": this.$.userName
+          "userName": this.$.userName.value
         }
 
         this.$.userQuery.ref.set(profile);
       }
+
+      _siginIn() {
+       this.$.auth.signInAnonymously().then(function(response){
+
+        });
+      }   
+
+      _siginOut() {
+       this.$.auth.signOut();
+      }      
 
     }
 

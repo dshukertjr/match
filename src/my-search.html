@@ -1,4 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-search">
@@ -18,18 +23,31 @@
       on-error="handleError">
     </firebase-auth>
 
+    <firebase-document
+      app-name="match"
+      path="/users/[[user.uid]]"
+      data="{{userMeta}}">
+    </firebase-document>
+
     <firebase-query
       app-name="match"
       id="userQuery"
       path="/users"
-      data="users">
+      data="{{users}}">
+    </firebase-query>
+
+    <firebase-query
+      app-name="match"
+      id="pairQuery"
+      path="/pairs"
+      limit-to-last="1">
     </firebase-query>
 
 
     <div class="card">
 
-      <template is="dom-repeat" items="{{users}}">
-          <div><span>users.userName</span><paper-button>chat</paper-button></div>
+      <template is="dom-repeat" items="[[users]]">
+          <div><span>[[item.userName]]</span><a href="/match"><paper-button on-tap="createPair" buddy="[[item]]">組む</paper-button></a></div>
       </template>
 
     </div>
@@ -42,7 +60,37 @@
       static get properties() {
         return {
           user: Object,
+          userMeta: Object,
+          users: Object,
         };
+      }
+
+
+      createPair(e){
+
+        var buddy = e.target.buddy;
+
+        var uid = buddy.$key;
+        delete buddy.$key;
+        buddy.uid = uid;
+
+        console.log(buddy);
+
+        this.$.userQuery.ref.child(this.user.uid).child("buddy").set(buddy);
+
+
+        var pair = {
+          user1: {
+            userName: this.userMeta.userName,
+            uid: this.user.uid
+          },
+          user2: buddy
+        };
+
+        console.log(pair);
+
+        this.$.pairQuery.ref.push(pair);
+
       }
     }
 

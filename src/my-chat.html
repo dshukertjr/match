@@ -11,6 +11,27 @@
       }
     </style>
 
+    <firebase-auth 
+      app-name="match"
+      id="auth" 
+      user="{{user}}" 
+      on-error="handleError">
+    </firebase-auth>
+
+    <firebase-query
+      app-name="match"
+      id="userQuery"
+      path="/users"
+      data="{{users}}">
+    </firebase-query>
+
+    <firebase-query
+      app-name="match"
+      id="roomQuery"
+      path="/rooms"
+      limit-to-last="1">
+    </firebase-query>
+
     <div class="card">
 
     </div>
@@ -19,7 +40,28 @@
   <script>
     class MyChat extends Polymer.Element {
       static get is() { return 'my-chat'; }
+
+      static get properties() {
+        return {
+          user: Object,
+          users: Object,
+          chats: Object,
+        };
+      }
+
+
+      openChatRoom(){
+        var profile = {
+          "userName": this.$.userName.value
+        }
+
+        this.$.userQuery.ref.set(profile);
+      }
+
     }
+
+
+
 
     window.customElements.define(MyChat.is, MyChat);
   </script>
