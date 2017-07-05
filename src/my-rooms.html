@@ -37,13 +37,6 @@
 
     <firebase-query
       app-name="match"
-      id="pairQuery"
-      path="/pairs"
-      data="{{pairs}}">
-    </firebase-query>
-
-    <firebase-query
-      app-name="match"
       id="roomQuery"
       path="/rooms"
       data="{{rooms}}">
@@ -51,8 +44,8 @@
 
     <div class="card">
 
-      <template is="dom-repeat" items="[[pairs]]">
-          <div><span>[[item.user1.userName]]</span><span> &amp; </span><span>[[item.user2.userName]]</span><paper-button on-tap="createChatRoom" user1="[[item.user1]]" user2="[[item.user2]]">ルーム作成</paper-button></div>
+      <template is="dom-repeat" items="[[rooms]]">
+          <div><span>[[item.member.user1.userName]]</span><span> &amp; </span><span>[[item.member.user2.userName]]</span><span> &amp; </span><span>[[item.member.user3.userName]]</span><span> &amp; </span><span>[[item.member.user4.userName]]</span><a href="/chat/[[item.$key]]"><paper-button>入る</paper-button></a></div>
       </template>
 
     </div>
@@ -67,37 +60,28 @@
         return {
           user: Object,
           users: Object,
-          pairs: Object,
+          rooms: Object,
         };
       }
 
 
 
-      createChatRoom(e){
+      createChatRoom(){
         var user1 = e.target.user1
         var user2 = e.target.user2
 
-        var me = {
-          uid: this.user.uid,
-          userName: this.userMeta.userName
-        }
-
-        var chatRoom = {
+        var charRoom = {
           "meta": {
             member: {
-              user1: me,
-              user2: this.userMeta.buddy,
+              user1: this.user,
+              user2: this.user.buddy,
               user3: user1,
               user4: user2
             }
           }
         }
 
-        const chatRoomKey = this.$.roomQuery.ref.push(chatRoom)
-
-        console.log(chatRoomKey)
-        console.log(chatRoomKey.U.u.key)
-        return
+        chatRoomKey = this.$.userQuery.ref.push(chatRoom).key()
 
         this.$.roomQuery.ref.child(this.user.uid).push(chatRoomKey)
         this.$.roomQuery.ref.child(this.user.buddy.uid).push(chatRoom)

@@ -1,6 +1,7 @@
+<!-- search the buddy -->
+
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
@@ -72,6 +73,7 @@
 
         var uid = buddy.$key;
         delete buddy.$key;
+        delete buddy.buddy;
         buddy.uid = uid;
 
         console.log(buddy);
